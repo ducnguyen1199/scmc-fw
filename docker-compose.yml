@@ -1,0 +1,12 @@
+version: '3'
+services:
+  scmc_api:
+    container_name: SCMC_API
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - /app/scmc/node_modules/
+    working_dir: /app/scmc_api
+    ports:
+      - 3000:3000

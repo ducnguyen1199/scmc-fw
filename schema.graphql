@@ -4,14 +4,20 @@
 type User {
   id: ID!
   name: String
-  about: String
+  email: String
+  password: PasswordState
   createdAt: DateTime
+}
+
+type PasswordState {
+  isSet: Boolean!
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input UserWhereUniqueInput {
   id: ID
+  email: String
 }
 
 input UserWhereInput {
@@ -20,7 +26,7 @@ input UserWhereInput {
   NOT: [UserWhereInput!]
   id: IDFilter
   name: StringFilter
-  about: StringFilter
+  email: StringFilter
   createdAt: DateTimeNullableFilter
 }
 
@@ -77,7 +83,7 @@ input DateTimeNullableFilter {
 input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  about: OrderDirection
+  email: OrderDirection
   createdAt: OrderDirection
 }
 
@@ -88,7 +94,8 @@ enum OrderDirection {
 
 input UserUpdateInput {
   name: String
-  about: String
+  email: String
+  password: String
   createdAt: DateTime
 }
 
@@ -99,8 +106,324 @@ input UserUpdateArgs {
 
 input UserCreateInput {
   name: String
-  about: String
+  email: String
+  password: String
   createdAt: DateTime
+}
+
+type Instagram {
+  id: ID!
+  name: String
+  url: String
+}
+
+input InstagramWhereUniqueInput {
+  id: ID
+}
+
+input InstagramWhereInput {
+  AND: [InstagramWhereInput!]
+  OR: [InstagramWhereInput!]
+  NOT: [InstagramWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  url: StringFilter
+}
+
+input InstagramOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  url: OrderDirection
+}
+
+input InstagramUpdateInput {
+  name: String
+  url: String
+}
+
+input InstagramUpdateArgs {
+  where: InstagramWhereUniqueInput!
+  data: InstagramUpdateInput!
+}
+
+input InstagramCreateInput {
+  name: String
+  url: String
+}
+
+type Motorcycle {
+  id: ID!
+  name: String
+  customs(where: CustomWhereInput! = {}, orderBy: [CustomOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CustomWhereUniqueInput): [Custom!]
+  customsCount(where: CustomWhereInput! = {}): Int
+}
+
+input MotorcycleWhereUniqueInput {
+  id: ID
+}
+
+input MotorcycleWhereInput {
+  AND: [MotorcycleWhereInput!]
+  OR: [MotorcycleWhereInput!]
+  NOT: [MotorcycleWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  customs: CustomManyRelationFilter
+}
+
+input CustomManyRelationFilter {
+  every: CustomWhereInput
+  some: CustomWhereInput
+  none: CustomWhereInput
+}
+
+input MotorcycleOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input MotorcycleUpdateInput {
+  name: String
+  customs: CustomRelateToManyForUpdateInput
+}
+
+input CustomRelateToManyForUpdateInput {
+  disconnect: [CustomWhereUniqueInput!]
+  set: [CustomWhereUniqueInput!]
+  create: [CustomCreateInput!]
+  connect: [CustomWhereUniqueInput!]
+}
+
+input MotorcycleUpdateArgs {
+  where: MotorcycleWhereUniqueInput!
+  data: MotorcycleUpdateInput!
+}
+
+input MotorcycleCreateInput {
+  name: String
+  customs: CustomRelateToManyForCreateInput
+}
+
+input CustomRelateToManyForCreateInput {
+  create: [CustomCreateInput!]
+  connect: [CustomWhereUniqueInput!]
+}
+
+type Custom {
+  id: ID!
+  name: String
+  thumbnail: CloudinaryImage_File
+  banner: CloudinaryImage_File
+  motorcycles(where: MotorcycleWhereInput! = {}, orderBy: [MotorcycleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MotorcycleWhereUniqueInput): [Motorcycle!]
+  motorcyclesCount(where: MotorcycleWhereInput! = {}): Int
+  images(where: CustomImageWhereInput! = {}, orderBy: [CustomImageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CustomImageWhereUniqueInput): [CustomImage!]
+  imagesCount(where: CustomImageWhereInput! = {}): Int
+}
+
+type CloudinaryImage_File {
+  id: ID
+  filename: String
+  originalFilename: String
+  mimetype: String
+  encoding: String
+  publicUrl: String
+  publicUrlTransformed(transformation: CloudinaryImageFormat): String
+}
+
+"""
+Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
+All options are strings as they ultimately end up in a URL.
+"""
+input CloudinaryImageFormat {
+  """ Rewrites the filename to be this pretty string. Do not include `/` or `.`
+  """
+  prettyName: String
+  width: String
+  height: String
+  crop: String
+  aspect_ratio: String
+  gravity: String
+  zoom: String
+  x: String
+  y: String
+  format: String
+  fetch_format: String
+  quality: String
+  radius: String
+  angle: String
+  effect: String
+  opacity: String
+  border: String
+  background: String
+  overlay: String
+  underlay: String
+  default_image: String
+  delay: String
+  color: String
+  color_space: String
+  dpr: String
+  page: String
+  density: String
+  flags: String
+  transformation: String
+}
+
+input CustomWhereUniqueInput {
+  id: ID
+}
+
+input CustomWhereInput {
+  AND: [CustomWhereInput!]
+  OR: [CustomWhereInput!]
+  NOT: [CustomWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  motorcycles: MotorcycleManyRelationFilter
+  images: CustomImageManyRelationFilter
+}
+
+input MotorcycleManyRelationFilter {
+  every: MotorcycleWhereInput
+  some: MotorcycleWhereInput
+  none: MotorcycleWhereInput
+}
+
+input CustomImageManyRelationFilter {
+  every: CustomImageWhereInput
+  some: CustomImageWhereInput
+  none: CustomImageWhereInput
+}
+
+input CustomOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input CustomUpdateInput {
+  name: String
+  thumbnail: Upload
+  banner: Upload
+  motorcycles: MotorcycleRelateToManyForUpdateInput
+  images: CustomImageRelateToManyForUpdateInput
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input MotorcycleRelateToManyForUpdateInput {
+  disconnect: [MotorcycleWhereUniqueInput!]
+  set: [MotorcycleWhereUniqueInput!]
+  create: [MotorcycleCreateInput!]
+  connect: [MotorcycleWhereUniqueInput!]
+}
+
+input CustomImageRelateToManyForUpdateInput {
+  disconnect: [CustomImageWhereUniqueInput!]
+  set: [CustomImageWhereUniqueInput!]
+  create: [CustomImageCreateInput!]
+  connect: [CustomImageWhereUniqueInput!]
+}
+
+input CustomUpdateArgs {
+  where: CustomWhereUniqueInput!
+  data: CustomUpdateInput!
+}
+
+input CustomCreateInput {
+  name: String
+  thumbnail: Upload
+  banner: Upload
+  motorcycles: MotorcycleRelateToManyForCreateInput
+  images: CustomImageRelateToManyForCreateInput
+}
+
+input MotorcycleRelateToManyForCreateInput {
+  create: [MotorcycleCreateInput!]
+  connect: [MotorcycleWhereUniqueInput!]
+}
+
+input CustomImageRelateToManyForCreateInput {
+  create: [CustomImageCreateInput!]
+  connect: [CustomImageWhereUniqueInput!]
+}
+
+type CustomImage {
+  id: ID!
+  name: String
+  image: CloudinaryImage_File
+  custom: Custom
+  width: Int
+  height: Int
+  timestamp: DateTime
+}
+
+input CustomImageWhereUniqueInput {
+  id: ID
+}
+
+input CustomImageWhereInput {
+  AND: [CustomImageWhereInput!]
+  OR: [CustomImageWhereInput!]
+  NOT: [CustomImageWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  custom: CustomWhereInput
+  width: IntFilter
+  height: IntFilter
+  timestamp: DateTimeNullableFilter
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
+}
+
+input CustomImageOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  width: OrderDirection
+  height: OrderDirection
+  timestamp: OrderDirection
+}
+
+input CustomImageUpdateInput {
+  name: String
+  image: Upload
+  custom: CustomRelateToOneForUpdateInput
+  width: Int
+  height: Int
+  timestamp: DateTime
+}
+
+input CustomRelateToOneForUpdateInput {
+  create: CustomCreateInput
+  connect: CustomWhereUniqueInput
+  disconnect: Boolean
+}
+
+input CustomImageUpdateArgs {
+  where: CustomImageWhereUniqueInput!
+  data: CustomImageUpdateInput!
+}
+
+input CustomImageCreateInput {
+  name: String
+  image: Upload
+  custom: CustomRelateToOneForCreateInput
+  width: Int
+  height: Int
+  timestamp: DateTime
+}
+
+input CustomRelateToOneForCreateInput {
+  create: CustomCreateInput
+  connect: CustomWhereUniqueInput
 }
 
 """
@@ -115,14 +438,73 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+  createInstagram(data: InstagramCreateInput!): Instagram
+  createInstagrams(data: [InstagramCreateInput!]!): [Instagram]
+  updateInstagram(where: InstagramWhereUniqueInput!, data: InstagramUpdateInput!): Instagram
+  updateInstagrams(data: [InstagramUpdateArgs!]!): [Instagram]
+  deleteInstagram(where: InstagramWhereUniqueInput!): Instagram
+  deleteInstagrams(where: [InstagramWhereUniqueInput!]!): [Instagram]
+  createMotorcycle(data: MotorcycleCreateInput!): Motorcycle
+  createMotorcycles(data: [MotorcycleCreateInput!]!): [Motorcycle]
+  updateMotorcycle(where: MotorcycleWhereUniqueInput!, data: MotorcycleUpdateInput!): Motorcycle
+  updateMotorcycles(data: [MotorcycleUpdateArgs!]!): [Motorcycle]
+  deleteMotorcycle(where: MotorcycleWhereUniqueInput!): Motorcycle
+  deleteMotorcycles(where: [MotorcycleWhereUniqueInput!]!): [Motorcycle]
+  createCustom(data: CustomCreateInput!): Custom
+  createCustoms(data: [CustomCreateInput!]!): [Custom]
+  updateCustom(where: CustomWhereUniqueInput!, data: CustomUpdateInput!): Custom
+  updateCustoms(data: [CustomUpdateArgs!]!): [Custom]
+  deleteCustom(where: CustomWhereUniqueInput!): Custom
+  deleteCustoms(where: [CustomWhereUniqueInput!]!): [Custom]
+  createCustomImage(data: CustomImageCreateInput!): CustomImage
+  createCustomImages(data: [CustomImageCreateInput!]!): [CustomImage]
+  updateCustomImage(where: CustomImageWhereUniqueInput!, data: CustomImageUpdateInput!): CustomImage
+  updateCustomImages(data: [CustomImageUpdateArgs!]!): [CustomImage]
+  deleteCustomImage(where: CustomImageWhereUniqueInput!): CustomImage
+  deleteCustomImages(where: [CustomImageWhereUniqueInput!]!): [CustomImage]
+  endSession: Boolean!
+  authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
+  createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
+}
+
+union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
+
+type UserAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: User!
+}
+
+type UserAuthenticationWithPasswordFailure {
+  message: String!
+}
+
+input CreateInitialUserInput {
+  name: String
+  email: String
+  password: String
 }
 
 type Query {
   users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
+  instagrams(where: InstagramWhereInput! = {}, orderBy: [InstagramOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: InstagramWhereUniqueInput): [Instagram!]
+  instagram(where: InstagramWhereUniqueInput!): Instagram
+  instagramsCount(where: InstagramWhereInput! = {}): Int
+  motorcycles(where: MotorcycleWhereInput! = {}, orderBy: [MotorcycleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MotorcycleWhereUniqueInput): [Motorcycle!]
+  motorcycle(where: MotorcycleWhereUniqueInput!): Motorcycle
+  motorcyclesCount(where: MotorcycleWhereInput! = {}): Int
+  customs(where: CustomWhereInput! = {}, orderBy: [CustomOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CustomWhereUniqueInput): [Custom!]
+  custom(where: CustomWhereUniqueInput!): Custom
+  customsCount(where: CustomWhereInput! = {}): Int
+  customImages(where: CustomImageWhereInput! = {}, orderBy: [CustomImageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CustomImageWhereUniqueInput): [CustomImage!]
+  customImage(where: CustomImageWhereUniqueInput!): CustomImage
+  customImagesCount(where: CustomImageWhereInput! = {}): Int
   keystone: KeystoneMeta!
+  authenticatedItem: AuthenticatedItem
 }
+
+union AuthenticatedItem = User
 
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!

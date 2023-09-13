@@ -9,12 +9,46 @@ datasource sqlite {
 
 generator client {
   provider = "prisma-client-js"
-  output   = "node_modules/.myprisma/client"
 }
 
 model User {
   id        String    @id @default(cuid())
   name      String    @default("")
-  about     String    @default("")
+  email     String    @unique @default("")
+  password  String
   createdAt DateTime? @default(now())
+}
+
+model Instagram {
+  id   String @id @default(cuid())
+  name String @default("")
+  url  String @default("")
+}
+
+model Motorcycle {
+  id      String   @id @default(cuid())
+  name    String   @default("")
+  customs Custom[] @relation("Custom_motorcycles")
+}
+
+model Custom {
+  id          String        @id @default(cuid())
+  name        String        @default("")
+  thumbnail   String?
+  banner      String?
+  motorcycles Motorcycle[]  @relation("Custom_motorcycles")
+  images      CustomImage[] @relation("CustomImage_custom")
+}
+
+model CustomImage {
+  id        String    @id @default(cuid())
+  name      String    @default("")
+  image     String?
+  custom    Custom?   @relation("CustomImage_custom", fields: [customId], references: [id])
+  customId  String?   @map("custom")
+  width     Int
+  height    Int
+  timestamp DateTime?
+
+  @@index([customId])
 }

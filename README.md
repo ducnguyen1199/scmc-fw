@@ -1,38 +1,52 @@
-# Next.js + Keystone
+# Keystone Project Starter
 
-Keystone can be used as a data engine in Next.js applications without having to host a separate Keystone server.
-This is made possible by Keystone's `getContext` API.
+Welcome to Keystone!
 
-- **CRUD data within your Next.js server**: You can use Keystone data APIs directly in Next.js `getStaticProps` or `getServerSideProps` to CRUD data. ⚡️
-- **CRUD data from browser**: You can use the generated Keystone GraphQL schema to setup your own GraphQL server in a Next.js route. This enables you to send GraphQL requests from the browser. 🤯 (refer to [/pages/api/graphql.ts](/pages/api/graphql.ts) for implementation details)
-- You don't have to start the Keystone server at all.
+Run
 
-_Note: Since you are not starting the keystone server, the Admin UI will not be available. You can host Keystone as a separate server if you need Admin UI._
+```
+yarn dev
+```
 
-## Notes
+To view the config for your new app, look at [./keystone.ts](./keystone.ts)
 
-- This example is setup with seed data. Demo user email is `bruce@email.com`, password is `passw0rd`.
-- `pnpm next:dev` is all you need to develop your Next.js app. You don't need to start the keystone server since `getContext` will work without starting the Keystone server.
-- However when you make changes to your keystone lists, the schema files need to be regenerated. So you'll either have to run `pnpm keystone:dev` or `pnpm keystone:build` just once after making changes to your lists. Alternatively you can open two terminal tabs and run both `pnpm keystone:dev` and `pnpm next:dev` concurrently during development.
-- When you deploy your Next.js app, remember to run `pnpm keystone:build` once to make sure you have the latest schema files built for `getContext` API.
+This project starter is designed to give you a sense of the power Keystone can offer you, and show off some of its main features. It's also a pretty simple setup if you want to build out from it.
 
-## FAQ
+We recommend you use this alongside our [getting started walkthrough](https://keystonejs.com/docs/walkthroughs/getting-started-with-create-keystone-app) which will walk you through what you get as part of this starter.
 
-### 1. Why won't Admin UI work?
+If you want an overview of all the features Keystone offers, check out our [features](https://keystonejs.com/why-keystone#features) page.
 
-Admin UI needs the Keystone server to run. Your Next.js app runs on a Next.js server. Keystone's Admin UI runs on Keystone server. You can't have two servers running in a Next.js production environment. Since we are not starting the Keystone server in production builds, we won't have access to Keystone's Admin UI. You can access it in local (use the command `pnpm keystone:dev`) because you can easily start two servers in your local but once you deploy your Next.js app you won't have access to the Admin UI.
+## Some Quick Notes On Getting Started
 
-### 2. What should I do to both use Keystone in my Next.js app and have a fully functioning Admin UI?
+### Changing the database
 
-Easy. Deploy twice to two different servers.
+We've set you up with an [SQLite database](https://keystonejs.com/docs/apis/config#sqlite) for ease-of-use. If you're wanting to use PostgreSQL, you can!
 
-1. Deploy your Next.js app to one instance (Eg. Vercel).
-2. Deploy the Keystone server (commands in package.json) to another instance (Eg. Digital Ocean).
+Just change the `db` property on line 16 of the Keystone file [./keystone.ts](./keystone.ts) to
 
-Both these apps connect to the same database and are built with the same source code so everything will work as you expect it to.
+```typescript
+db: {
+    provider: 'postgresql',
+    url: process.env.DATABASE_URL || 'DATABASE_URL_TO_REPLACE',
+}
+```
 
-## Give it a try
+And provide your database url from PostgreSQL.
 
-Deploy this example to Vercel and see it for yourself.
+For more on database configuration, check out or [DB API Docs](https://keystonejs.com/docs/apis/config#db)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkeystonejs%2Fkeystone%2Ftree%2Fmain%2Fexamples%2Fframework-nextjs-pages-directory)
+### Auth
+
+We've put auth into its own file to make this humble starter easier to navigate. To explore it without auth turned on, comment out the `isAccessAllowed` on line 21 of the Keystone file [./keystone.ts](./keystone.ts).
+
+For more on auth, check out our [Authentication API Docs](https://keystonejs.com/docs/apis/auth#authentication-api)
+
+### Adding a frontend
+
+As a Headless CMS, Keystone can be used with any frontend that uses GraphQL. It provides a GraphQL endpoint you can write queries against at `/api/graphql` (by default [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql)). At Thinkmill, we tend to use [Next.js](https://nextjs.org/) and [Apollo GraphQL](https://www.apollographql.com/docs/react/get-started/) as our frontend and way to write queries, but if you have your own favourite, feel free to use it.
+
+A walkthrough on how to do this is forthcoming, but in the meantime our [todo example](https://github.com/keystonejs/keystone-react-todo-demo) shows a Keystone set up with a frontend. For a more full example, you can also look at an example app we built for [Prisma Day 2021](https://github.com/keystonejs/prisma-day-2021-workshop)
+
+### Embedding Keystone in a Next.js frontend
+
+While Keystone works as a standalone app, you can embed your Keystone app into a [Next.js](https://nextjs.org/) app. This is quite a different setup to the starter, and we recommend checking out our walkthrough for that [here](https://keystonejs.com/docs/walkthroughs/embedded-mode-with-sqlite-nextjs#how-to-embed-keystone-sq-lite-in-a-next-js-app).
